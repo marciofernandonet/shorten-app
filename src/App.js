@@ -1,26 +1,72 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react';
+import api from './services/api';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+export default class App extends Component{
+  
+  state = {
+    url: '',
+    CUSTOM_ALIAS: '',
+    url_sht: '',
+    error: false
+  };
+  
+  handleInputUrl = event =>{
+    this.setState({ url: event.target.value });
+  }
 
-export default App;
+  handleInputAlias= event =>{
+    this.setState({ CUSTOM_ALIAS: event.target.value });
+  }
+
+  handleSubmit = async event => {
+    event.preventDefault();
+
+    const { url, CUSTOM_ALIAS } = this.state;
+
+    if(!url)
+      return;
+
+    const response = await api.put('/create?:url', { url, CUSTOM_ALIAS });   
+
+    if(response.status === 201)
+      return this.setState({ url: '', CUSTOM_ALIAS: '', url_sht: response.data.url, error: false });
+
+    if(response.data.ERR_CODE)
+      this.setState({ error: true });
+  }
+  
+  render(){
+    return (
+      <div className="form-section">
+        <h1 className="page-title">Shorten URL</h1>
+        <form onSubmit={this.handleSubmit} className="shorten-form">
+          <input 
+            className="inputs input-url"
+            type="url" 
+            placeholder="Insira a url"
+            value={this.state.url}
+            onChange={this.handleInputUrl}
+            autoComplete="on"
+            name="url"
+            required
+          />
+          <input 
+            type="text"
+            className="inputs input-alias" 
+            name="alias" 
+            value={this.state.CUSTOM_ALIAS}
+            onChange={this.handleInputAlias}
+            placeholder="Alias"/>
+          <button type="submit" className="submit-button">Shorten</button>
+        </form> 
+        <a className="shorten-result" target="_blank" rel="noopener noreferrer" href={this.state.url_sht}>
+          { this.state.url_sht }
+        </a>
+        {this.state.error && <div className="error">
+          CUSTOM ALIAS ALREADY EXISTS
+        </div>}
+      </div>
+    );
+  }
+}
