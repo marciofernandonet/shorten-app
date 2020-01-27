@@ -33,7 +33,7 @@ export default class App extends Component{
       return this.setState({ url: '', CUSTOM_ALIAS: '', url_sht: response.data.url, error: false });
 
     if(response.data.ERR_CODE === "001")
-      this.setState({ error: true });
+      this.setState({ error: true, url_sht: '' });
   }
   
   render(){
