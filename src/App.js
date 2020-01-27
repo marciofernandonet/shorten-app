@@ -32,7 +32,7 @@ export default class App extends Component{
     if(response.status === 201)
       return this.setState({ url: '', CUSTOM_ALIAS: '', url_sht: response.data.url, error: false });
 
-    if(response.data.ERR_CODE)
+    if(response.data.ERR_CODE === "001")
       this.setState({ error: true });
   }
   
@@ -57,10 +57,11 @@ export default class App extends Component{
             name="alias" 
             value={this.state.CUSTOM_ALIAS}
             onChange={this.handleInputAlias}
+            maxLength="15"
             placeholder="Alias"/>
           <button type="submit" className="submit-button">Shorten</button>
         </form> 
-        <a className="shorten-result" target="_blank" rel="noopener noreferrer" href={this.state.url_sht}>
+        <a className="shorten-result" onClick={()=> window.open(this.state.url_sht, "_blank")} href={this.state.url_sht}>
           { this.state.url_sht }
         </a>
         {this.state.error && <div className="error">
