@@ -61,9 +61,9 @@ export default class App extends Component{
             placeholder="Alias"/>
           <button type="submit" className="submit-button">Shorten</button>
         </form> 
-        <div className="shorten-result">
+        <a className="shorten-result" target="_blank" rel="noopener noreferrer" href={this.state.url_sht}>
           { this.state.url_sht }
-        </div>
+        </a>
         {this.state.error && <div className="error">
           CUSTOM ALIAS ALREADY EXISTS
         </div>}
